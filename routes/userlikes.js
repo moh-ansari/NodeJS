@@ -1,31 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
-var User = require('../models/user');
+var Userlikes = require('../models/userlikes');
 
-router.get('/', function (req, res, next) {
-    User.find()
-        .exec(function (err, user) {
+router.get('/', function (req, res) {
+    Userlikes.find()
+        .exec(function (err, userlikes) {
             if (err) {
                 return res.status(500).json({
                     title: 'An error occurred',
                     error: err
                 });
             }
-            res.status(200).json({
-                message: 'Success',
-                obj: user
+            res.status(201).json({
+                success: true,
+                message: 'data recieved',
+                obj: userlikes
             });
         });
 });
 
-router.post('/', function (req, res, next) {
-    var user = new User({
-        firstname : req.body.firstname,
-        lastname : req.body.lastname,
-        email : req.body.email
+// localhost:5000/userlikes/
+router.post('/', function (req, res) {
+    var userlikes = new Userlikes({
+        name : req.body.name,
+        likes : req.body.likes
     });
-    user.save(function (err, result) {
+    userlikes.save(function (err, result) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
@@ -33,14 +34,15 @@ router.post('/', function (req, res, next) {
             });
         }
         res.status(201).json({
-            message: 'Saved message',
+            success: true,
+            message: 'Saved data',
             obj: result
         });
     });
 });
 
 router.delete('/:id', function(req, res, next) {
-    User.findById(req.params.id, function (err, user) {
+    Userlikes.findById(req.params.id, function (err, user) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
@@ -69,7 +71,7 @@ router.delete('/:id', function(req, res, next) {
 });
 
 router.patch('/:id', function (req, res, next) {
-    User.findById(req.params.id, function (err, user) {
+    Userlikes.findById(req.params.id, function (err, user) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
@@ -82,9 +84,8 @@ router.patch('/:id', function (req, res, next) {
                 error: {message: 'User not found'}
             });
         }
-        user.firstname = req.body.firstname;
-        user.lastname = req.body.lastname;
-        user.email = req.body.email;
+        user.name = req.body.name;
+        user.likes = req.body.likes;
         user.save(function(err, result) {
             if (err) {
                 return res.status(500).json({
