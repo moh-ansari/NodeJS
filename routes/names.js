@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-var Userlikes = require('../models/userlikes');
+var Names = require('../models/names');
 
 router.get('/', function (req, res) {
-    Userlikes.find()
-        .exec(function (err, userlikes) {
+    Names.find()
+        .exec(function (err, names) {
             if (err) {
                 return res.status(500).json({
                     title: 'An error occurred',
@@ -15,18 +15,17 @@ router.get('/', function (req, res) {
             res.status(201).json({
                 success: true,
                 message: 'data recieved',
-                obj: userlikes
+                obj: names
             });
         });
 });
 
 // localhost:5000/userlikes/
 router.post('/', function (req, res) {
-    var userlikes = new Userlikes({
-        name : req.body.name,
-        likes : req.body.likes
+    var names = new Names({
+        name : req.body.name
     });
-    userlikes.save(function (err, result) {
+    names.save(function (err, result) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
@@ -42,20 +41,20 @@ router.post('/', function (req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-    Userlikes.findById(req.params.id, function (err, user) {
+    Names.findById(req.params.id, function (err, name) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
                 error: err
             });
         }
-        if (!user) {
+        if (!name) {
             return res.status(500).json({
                 title: 'No id Found!',
                 error: {message: 'id not found'}
             });
         }
-        user.remove(function(err, result) {
+        name.remove(function(err, result) {
             if (err) {
                 return res.status(500).json({
                     title: 'An error occurred',
@@ -63,7 +62,7 @@ router.delete('/:id', function(req, res) {
                 });
             }
             res.status(200).json({
-                message: 'Deleted user',
+                message: 'Deleted Name',
                 obj: result
             });
         });
@@ -71,22 +70,21 @@ router.delete('/:id', function(req, res) {
 });
 
 router.patch('/:id', function (req, res) {
-    Userlikes.findById(req.params.id, function (err, user) {
+    Names.findById(req.params.id, function (err, name) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
                 error: err
             });
         }
-        if (!user) {
+        if (!name) {
             return res.status(500).json({
-                title: 'No user Found!',
-                error: {message: 'User not found'}
+                title: 'No name Found!',
+                error: {message: 'Name not found'}
             });
         }
-        user.name = req.body.name;
-        user.likes = req.body.likes;
-        user.save(function(err, result) {
+        name.name = req.body.name;
+        name.save(function(err, result) {
             if (err) {
                 return res.status(500).json({
                     title: 'An error occurred',
